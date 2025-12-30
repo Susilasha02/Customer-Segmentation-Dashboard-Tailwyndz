@@ -6,12 +6,16 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
-
+import os 
 from sklearn.metrics import (
     silhouette_score,
     davies_bouldin_score,
     calinski_harabasz_score
 )
+IS_RENDER = os.getenv("RENDER") is not None
+
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
+os.environ["STREAMLIT_SERVER_ENABLECORS"] = "false"
 
 # =========================================================
 # PAGE CONFIG
@@ -175,14 +179,22 @@ if page == "Home":
     </div>
     """, unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader(
-        "Upload CSV",
-        type=["csv"],
-        label_visibility="collapsed"
-    )
-    if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        df.columns = df.columns.str.lower()
+
+    if IS_RENDER:
+        st.info("Using demo dataset (Render deployment)")
+        df = pd.read_csv("customer_demo.csv")
+
+    else:
+        uploaded_file = st.file_uploader(
+            "Upload CSV",
+            type=["csv"],
+            label_visibility="collapsed"
+        )
+
+        if uploaded_file is None:
+            st.stop()
+
+        df = pd.read_csv(uploaded_file)   
 
         # --------------------------------------------------
         # COLUMN VALIDATION & MAPPING
