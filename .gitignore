@@ -1,0 +1,13 @@
+# Datasets
+*.csv
+*.zip
+
+# Notebooks
+*.ipynb
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual env
+.venv/
