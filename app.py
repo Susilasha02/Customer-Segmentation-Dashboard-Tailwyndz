@@ -179,22 +179,17 @@ if page == "Home":
     </div>
     """, unsafe_allow_html=True)
 
+    uploaded_file = st.file_uploader(
+        "Upload CSV",
+        type=["csv"],
+        label_visibility="collapsed"
+    )
 
-    if IS_RENDER:
-        st.info("Using demo dataset (Render deployment)")
-        df = pd.read_csv("customer_demo.csv")
+    if uploaded_file is None:
+        st.warning("Please upload a CSV file to continue.")
+        st.stop()
 
-    else:
-        uploaded_file = st.file_uploader(
-            "Upload CSV",
-            type=["csv"],
-            label_visibility="collapsed"
-        )
-
-        if uploaded_file is None:
-            st.stop()
-
-        df = pd.read_csv(uploaded_file)   
+        df = pd.read_csv(uploaded_file)  
 
         # --------------------------------------------------
         # COLUMN VALIDATION & MAPPING
